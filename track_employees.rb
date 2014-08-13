@@ -1,6 +1,7 @@
 require 'pry'
 require 'active_record'
 require './lib/employee'
+require './lib/division'
 
 database_configurations = YAML::load(File.open('./db/config.yml'))
 development_configuration = database_configurations['development']
@@ -16,6 +17,7 @@ def main
   until selection == 'e'
     puts "Choose an option:"
     puts "Press 'a' to add an employee."
+    puts "Press 'cd' to create a division."
     puts "Press 'd' to delete an employee."
     puts "Press 'l' to list all employees."
     puts "Press 'm' to modify an employee."
@@ -23,6 +25,9 @@ def main
     case selection
     when 'a'
       add_employee
+      add_employee_to_div
+    when 'cd'
+      add_div
     when 'd'
       destroy_employee
     when 'l'
@@ -35,6 +40,12 @@ def main
   end
 end
 
+def add_div
+  puts "please enter the new division's name:"
+  name = gets.chomp
+  division = Division.create({:name => name})
+  puts division.name + " has been added!"
+end
 
 def add_employee
   puts "please enter the employees name:"
@@ -57,6 +68,7 @@ def list_employees
 end
 
 def modify_employee
+  list_employees
   puts "please enter the employees name:"
   name = gets.chomp
   employee = Employee.find_by({:name => name})
@@ -71,6 +83,10 @@ def modify_employee
     puts "well fine. nevermind then."
     main
   end
+
+end
+
+def add_employee_to_div
 
 end
 welcome
