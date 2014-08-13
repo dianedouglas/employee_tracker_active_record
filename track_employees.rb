@@ -18,6 +18,7 @@ def main
     puts "Press 'a' to add an employee."
     puts "Press 'd' to delete an employee."
     puts "Press 'l' to list all employees."
+    puts "Press 'm' to modify an employee."
     selection = gets.chomp
     case selection
     when 'a'
@@ -26,6 +27,8 @@ def main
       destroy_employee
     when 'l'
       list_employees
+    when 'm'
+      modify_employee
     else
       puts 'invalid entry'
     end
@@ -51,5 +54,23 @@ end
 def list_employees
   puts "Here are all your worker drones:"
   Employee.all.each_with_index {|employee, index| puts (index + 1).to_s + ". " + employee.name}
+end
+
+def modify_employee
+  puts "please enter the employees name:"
+  name = gets.chomp
+  employee = Employee.find_by({:name => name})
+  puts "would you like to change the employee's name? y/n"
+  choice = gets.chomp
+  if choice == 'y'
+    puts "enter their new name."
+    name = gets.chomp
+    employee.name = name
+    employee.save
+  else
+    puts "well fine. nevermind then."
+    main
+  end
+
 end
 welcome
