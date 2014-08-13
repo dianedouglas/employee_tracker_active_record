@@ -50,8 +50,8 @@ end
 def add_employee
   puts "please enter the employees name:"
   name = gets.chomp
-  employee = Employee.create({:name => name})
-  puts employee.name + " has been added!"
+  @employee = Employee.create({:name => name})
+  puts @employee.name + " has been added!"
 end
 
 def destroy_employee
@@ -86,7 +86,16 @@ def modify_employee
 
 end
 
-def add_employee_to_div
+def list_divisions
+  Division.all.each {|div| puts div.name}
+end
 
+def add_employee_to_div
+  list_divisions
+  puts "Type the name of a division to assign your employee to."
+  div = gets.chomp
+  division = Division.find_by({:name => div})
+  @employee.add_to_div(division)
+  puts "Employee #{@employee.name} has been added to #{division.name}"
 end
 welcome
