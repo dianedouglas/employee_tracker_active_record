@@ -8,7 +8,7 @@ describe Employee do
       test_employee = Employee.create({:name => 'Bob'})
       test_division = Division.create({:name => 'HR'})
       test_employee.add_to_div(test_division)
-      expect(test_employee.div_id).to eq test_division.id
+      expect(test_employee.division_id).to eq test_division.id
     end
   end
 end

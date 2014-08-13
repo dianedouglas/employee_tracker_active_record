@@ -20,6 +20,7 @@ def main
     puts "Press 'cd' to create a division."
     puts "Press 'd' to delete an employee."
     puts "Press 'l' to list all employees."
+    puts "Press 'div' to list all employees in a division."
     puts "Press 'm' to modify an employee."
     selection = gets.chomp
     case selection
@@ -32,6 +33,8 @@ def main
       destroy_employee
     when 'l'
       list_employees
+    when 'div'
+      list_employees_in_div
     when 'm'
       modify_employee
     else
@@ -67,6 +70,15 @@ def list_employees
   Employee.all.each_with_index {|employee, index| puts (index + 1).to_s + ". " + employee.name}
 end
 
+def list_employees_in_div
+  list_divisions
+  puts "Type the name of a division to view its employees."
+  div_name = gets.chomp
+  division = Division.find_by({:name => div_name})
+  division.employees
+
+end
+
 def modify_employee
   list_employees
   puts "please enter the employees name:"
@@ -83,7 +95,6 @@ def modify_employee
     puts "well fine. nevermind then."
     main
   end
-
 end
 
 def list_divisions
@@ -98,4 +109,6 @@ def add_employee_to_div
   @employee.add_to_div(division)
   puts "Employee #{@employee.name} has been added to #{division.name}"
 end
+
+def
 welcome
