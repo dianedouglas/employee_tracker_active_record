@@ -2,6 +2,7 @@ require 'pry'
 require 'active_record'
 require './lib/employee'
 require './lib/division'
+require './lib/project'
 
 database_configurations = YAML::load(File.open('./db/config.yml'))
 development_configuration = database_configurations['development']
@@ -17,16 +18,20 @@ def main
   until selection == 'e'
     puts "Choose an option:"
     puts "Press 'a' to add an employee."
+    puts "Press 'p' to add a project."
     puts "Press 'cd' to create a division."
     puts "Press 'd' to delete an employee."
     puts "Press 'l' to list all employees."
     puts "Press 'div' to list all employees in a division."
+    puts "Press 'g' to get the div of an employee."
     puts "Press 'm' to modify an employee."
     selection = gets.chomp
     case selection
     when 'a'
       add_employee
       add_employee_to_div
+    when 'p'
+      add_project
     when 'cd'
       add_div
     when 'd'
@@ -37,6 +42,8 @@ def main
       list_employees_in_div
     when 'm'
       modify_employee
+    when 'g'
+      get_div_from_employee
     else
       puts 'invalid entry'
     end
@@ -57,7 +64,16 @@ def add_employee
   puts @employee.name + " has been added!"
 end
 
+def add_project
+  puts "name the project."
+  name = gets.chomp
+  project = Project.create({:name => name})
+  binding.pry
+
+end
+
 def destroy_employee
+  list_employees
   puts "please enter the employees name:"
   name = gets.chomp
   employee = Employee.find_by({:name => name})
@@ -75,8 +91,18 @@ def list_employees_in_div
   puts "Type the name of a division to view its employees."
   div_name = gets.chomp
   division = Division.find_by({:name => div_name})
-  division.employees
+  division.employees.each do |employee|
+    puts employee.name
+  end
+end
 
+def get_div_from_employee
+  list_employees
+  puts "please enter the employees name:"
+  name = gets.chomp
+  employee = Employee.find_by({:name => name})
+  puts "that employee is in: "
+  puts employee.division.name
 end
 
 def modify_employee
@@ -84,12 +110,14 @@ def modify_employee
   puts "please enter the employees name:"
   name = gets.chomp
   employee = Employee.find_by({:name => name})
-  puts "would you like to change the employee's name? y/n"
+  puts "would you like to change the employee's division? y/n"
   choice = gets.chomp
   if choice == 'y'
-    puts "enter their new name."
+    list_divisions
+    puts "enter their new division."
     name = gets.chomp
-    employee.name = name
+    division = Division.find_by({:name => name})
+    employee.division_id = division.id
     employee.save
   else
     puts "well fine. nevermind then."
@@ -107,8 +135,8 @@ def add_employee_to_div
   div = gets.chomp
   division = Division.find_by({:name => div})
   @employee.add_to_div(division)
+  @employee.save
   puts "Employee #{@employee.name} has been added to #{division.name}"
 end
 
-def
 welcome
